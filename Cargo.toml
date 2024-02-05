@@ -1,0 +1,14 @@
+[package]
+name = "revisor"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "revisor_common"
+path = "src/common.rs"
+
+[dependencies]
+getopts = "0.2"
+libc = "0.2"
+once_cell = "1.19"
+slab = "0.4"
