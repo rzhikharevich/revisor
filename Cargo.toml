@@ -8,7 +8,7 @@ name = "revisor_common"
 path = "src/common.rs"
 
 [dependencies]
-getopts = "0.2"
+getopts = { version = "0.2", default-features = false }
 libc = "0.2"
 once_cell = "1.19"
 slab = "0.4"
