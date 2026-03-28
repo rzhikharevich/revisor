@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  options,
   pkgs,
   ...
 }:
@@ -8,7 +9,6 @@
 let
   revisorLib = import ./lib.nix { inherit lib pkgs; };
   cfg = config.services.revisor;
-  isDarwin = pkgs.stdenv.isDarwin;
 
   revisorScript = revisorLib.mkRevisorScript {
     inherit (cfg)
@@ -26,8 +26,8 @@ in
   };
 
   config = lib.mkIf cfg.enable (
-    if isDarwin then
-      {
+    lib.mkMerge [
+      (lib.mkIf (options ? launchd) {
         launchd.agents.revisor = {
           enable = true;
           config = {
@@ -36,9 +36,8 @@ in
             RunAtLoad = true;
           };
         };
-      }
-    else
-      {
+      })
+      (lib.mkIf (options ? systemd) {
         systemd.user.services.revisor = {
           Unit.Description = "revisor daemon supervisor";
           Service = {
@@ -47,6 +46,7 @@ in
           };
           Install.WantedBy = [ "default.target" ];
         };
-      }
+      })
+    ]
   );
 }
